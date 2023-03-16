@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Lista de diretórios</title>
+</head>
+<body>
+	<h1>Lista de diretórios:</h1>
+	<ul id="dirs-list"></ul>
+
+	<script>
+		// Obtém o caminho do diretório atual
+		const dirPath = './';
+
+		// Obtém a lista de diretórios no diretório atual
+		fetch(dirPath)
+			.then(response => response.text())
+			.then(html => {
+				const parser = new DOMParser();
+				const doc = parser.parseFromString(html, 'text/html');
+				const dirs = Array.from(doc.querySelectorAll('a')).filter(a => a.href.endsWith('/'));
+
+				// Gera um link para cada diretório
+				const dirsList = document.getElementById('dirs-list');
+				for (const dir of dirs) {
+					const dirName = dir.href.slice(dirPath.length, -1);
+					const li = document.createElement('li');
+					const a = document.createElement('a');
+					a.href = dirName;
+					a.textContent = dirName;
+					li.appendChild(a);
+					dirsList.appendChild(li);
+				}
+			})
+			.catch(error => console.error(error));
+	</script>
+</body>
+</html>
